@@ -1,0 +1,10 @@
+.gameboard {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+
+}
+
+.square {
+    height: 100px;
+    border: 1px solid black;
+}
