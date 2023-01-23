@@ -38,5 +38,22 @@ body {
 }
 
 .start-game button {
-    display: none
+    /* display: none */
 }
+
+.inactive {
+    color: #ccc
+}
+
+
+
+
+
+.player-select div {
+    color: green;
+}
+
+
+
+/* #2 attempt */
+

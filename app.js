@@ -23,13 +23,15 @@
 // [x,1,x,x,4,x,x,7,x]
 // [x,x,2,x,x,5,x,x,8]
 // [0,x,x,x,4,x,x,x,8]
-// [x,x,2,x,4,x,6,x,x]
+// [x,x,2,x,4,x,6,x,x]      
 
 let squares = document.querySelectorAll('.square');
 let result = document.querySelector('.result');
 let player = document.querySelectorAll('.player div');
 let startGameButton = document.querySelector('.start-game button');
 let choosePlayer = document.querySelector('.choose-player');
+let X = document.querySelector('.X');
+let O = document.querySelector('.O');
 
 let squaresArr = [...squares];
 
@@ -42,7 +44,7 @@ function init() {
         pl.addEventListener('click', firstPlayer)
     })
     startGameButton.addEventListener('click', startGame);
-    choosePlayer.style.display = 'block'
+    // choosePlayer.style.display = 'block'
 }
 
 init();
@@ -52,19 +54,21 @@ init();
 function runGame(e) {
     // console.log(squaresArr.indexOf(e.target))
     e.target.textContent = curPlayer;
+    e.target.removeEventListener('click', runGame);
     checkBoard()
     changePlayer();
 }
 
 function firstPlayer(e) {
+    choosePlayer.classList.add('inactive');
     e.target.classList.add('active-player');
     player.forEach((pl) => {
         pl.removeEventListener('click', firstPlayer)
     })
     // console.log(e.target.textContent)
     curPlayer = e.target.textContent;
-    startGameButton.style.display = 'block';
-    choosePlayer.style.display = 'none';
+    // startGameButton.style.display = 'block';
+    // choosePlayer.style.display = 'none';
     result.textContent = '';
 }
 
@@ -74,13 +78,14 @@ function startGame(){
         sq.addEventListener('click', runGame)
     })
 
-    startGameButton.style.display = 'none';
+    // startGameButton.style.display = 'none';
     
 }
 
 function changePlayer() {
     if(curPlayer === 'X'){
         curPlayer = 'O'
+
     } else {
         curPlayer = 'X'
     }
