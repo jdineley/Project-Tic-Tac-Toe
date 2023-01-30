@@ -24,6 +24,13 @@ let events = {
     }
 }
 
+
+
+
+
+
+
+// MODULE
 const playerSelect = (function(){
 
     let startPlayer;
@@ -32,7 +39,7 @@ const playerSelect = (function(){
     let X = document.querySelector('.X');
     let O = document.querySelector('.O');
     let playerIndicators = document.querySelectorAll('.player-select div');
-    let h3 = document.querySelector('.player-select h3')
+    let selectPlayer = document.querySelector('.container h3')
 
     // bind event
     playerIndicators.forEach((pl) => {
@@ -74,23 +81,34 @@ const playerSelect = (function(){
         playerIndicators.forEach((pl) => {
             pl.removeEventListener('click', choosePlayer)
         })
-        h3.style.color = '#ccc'
+        selectPlayer.style.color = '#ccc'
         events.emit('activateSquares')
         render();
     }
 
+    function playerSelectReset(){
+        selectPlayer.style.color = 'black'
+        playerIndicators.forEach((pl) => {
+            pl.addEventListener('click', choosePlayer)
+        })
+        X.style.color = 'black';
+        O.style.color = 'black';
+    }
+
     // API
     events.on('playerChange', setPlayer);
+    events.on('playerSelectReset', playerSelectReset);
 
 
     return {startPlayer};
 })();
 
 
+// MODULE
 const gameboard = (function(){
     //private variables:
     let gameboardArr = [];
-    let curPlayer = 'X';
+    let curPlayer ;
 
     //DOM Caching
 
@@ -114,7 +132,12 @@ const gameboard = (function(){
         })
     }
 
-    
+    function removeEventBindSquares(){
+        squares.forEach((sq) => {
+            sq.removeEventListener('click', updateGameboardArr)
+        })
+    }
+
 
     // Event handlers
 
@@ -167,27 +190,52 @@ const gameboard = (function(){
         }
     }
 
+    function resetGame(){
+        gameboardArr = [];
+        curPlayer = '';
+        squares.forEach((sq) => {
+            sq.textContent = '';
+        })
+        removeEventBindSquares();
+    }
 
     // API
     events.on('setPlayer', setPlayer);
     events.on('activateSquares', eventBindSquares);
+    events.on('resetGame', resetGame);
 
 })()
 
+// MODULE
 const result = (function(){
     // private variables
 
     // DOM caching
     let resultDisplay = document.querySelector('.result h2');
-
+    let playAgainBut = document.querySelector('.result button')
     // render
     function render(result) {
         resultDisplay.textContent = result
+        playAgainBut.style.display = 'block';
     }
+
+    //handlers
+    function playAgain(){
+        events.emit('resetGame');
+        resultDisplay.textContent = '';
+        playAgainBut.style.display = 'none';
+        events.emit('playerSelectReset');
+    }
+
+    //Event binding
+    playAgainBut.addEventListener('click', playAgain)
+    
 
     // API
     events.on('displayResult', render)
 
 })();
+
+
 
 
