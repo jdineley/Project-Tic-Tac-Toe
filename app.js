@@ -165,10 +165,16 @@ const gameboard = (function(){
 
     function checkForWinner(){
         let winningIndices = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        // console.log(gameboardArr, [...gameboardArr])
         if([...gameboardArr].filter((e) => {
             if(e) return e
         }).length < 9
         ){
+            // console.log(gameboardArr.map((player, index) => {
+            //     if(player === curPlayer) {
+            //         return index;
+            //     }
+            //     }).filter(el => el >= 0))
             let currentIndices = gameboardArr.map((player, index) => {
             if(player === curPlayer) {
                 return index;
@@ -180,9 +186,8 @@ const gameboard = (function(){
                     return currentIndices.includes(e)
                 })) {
                     events.emit('displayResult', `${curPlayer} is the winner`)
-                    squares.forEach((sq) => {
-                        sq.removeEventListener('click', updateGameboardArr)
-                    })
+                    removeEventBindSquares();
+                    events.emit('updateScore', curPlayer)
                 }
             }
         } else {
@@ -196,7 +201,7 @@ const gameboard = (function(){
         squares.forEach((sq) => {
             sq.textContent = '';
         })
-        removeEventBindSquares();
+        // removeEventBindSquares();
     }
 
     // API
@@ -236,6 +241,38 @@ const result = (function(){
 
 })();
 
+
+//MODULE 
+//Score keeping
+(function() {
+    // DOM Caching
+    let playerXScore = document.querySelector('.playerX p')
+    let playerOScore = document.querySelector('.playerO p')
+    let playersScores = document.querySelectorAll('.player')
+    let resetScoresBut = document.querySelector('#reset-scores')
+
+    // Functions
+    function updateScore(winner) {
+        if(winner === 'X') playerXScore.textContent++
+        else playerOScore.textContent++ 
+        resetScoresBut.style.display = 'block'
+    }
+
+    function resetScores() {
+        console.log('here')
+        playersScores.forEach((player) => {
+            player.querySelector('p').textContent = 0
+        })
+        resetScoresBut.style.display = 'none'
+    }
+
+    // Event binding
+    resetScoresBut.addEventListener('click', resetScores)
+
+
+    // API
+    events.on('updateScore', updateScore)
+})()
 
 
 
